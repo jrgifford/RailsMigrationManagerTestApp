@@ -22,14 +22,8 @@ class MigrationsController < ApplicationController
   end
   
   def run
-    result = MigrationService.run_migration(params[:id])
-    
-    if result[:success]
-      flash[:notice] = result[:message]
-    else
-      flash[:alert] = result[:error]
-    end
-    
+    RunMigrationJob.perform_later(params[:id])
+    flash[:notice] = "Migration has been queued for execution"
     redirect_to migrations_path
   end
   

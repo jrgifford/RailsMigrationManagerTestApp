@@ -6,22 +6,20 @@ class CreateCommentsAndUpdatePosts < ActiveRecord::Migration[7.1]
       t.references :user, null: false, foreign_key: true
       t.references :parent, null: true, foreign_key: { to_table: :comments }
       t.boolean :approved, default: false
-      t.inet :ip_address
+      t.string :ip_address
       t.string :user_agent
 
       t.timestamps
     end
 
     add_index :comments, [:post_id, :approved]
-    add_index :comments, :parent_id
     add_index :comments, :created_at
 
     add_column :posts, :comments_count, :integer, default: 0
     add_column :posts, :featured, :boolean, default: false
-    add_column :posts, :tags, :text, array: true, default: []
+    add_column :posts, :tags, :text
 
     add_index :posts, :featured
-    add_index :posts, :tags, using: 'gin'
 
     reversible do |dir|
       dir.up do

@@ -10,16 +10,37 @@ default: &default
   timeout: 5000
 
 development:
-  <<: *default
-  database: storage/development.sqlite3
+  primary:
+    <<: *default
+    database: storage/development.sqlite3
+  saas:
+    <<: *default
+    database: storage/development_saas.sqlite3
+  social_network:
+    <<: *default
+    database: storage/development_social_network.sqlite3
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: storage/test.sqlite3
+  primary:
+    <<: *default
+    database: storage/test.sqlite3
+  saas:
+    <<: *default
+    database: storage/test_saas.sqlite3
+  social_network:
+    <<: *default
+    database: storage/test_social_network.sqlite3
 
 production:
-  <<: *default
-  database: storage/production.sqlite3
+  primary:
+    <<: *default
+    database: storage/production.sqlite3
+  saas:
+    <<: *default
+    database: storage/production_saas.sqlite3
+  social_network:
+    <<: *default
+    database: storage/production_social_network.sqlite3
