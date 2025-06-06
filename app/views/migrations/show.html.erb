@@ -1,7 +1,11 @@
 <div class="container">
-  <h1>Migration Details</h1>
+  <h1>Migration Details - <%= (@database || 'Primary').titleize %> Database</h1>
   
   <div class="migration-info">
+    <div class="info-row">
+      <span class="label">Database:</span>
+      <span class="value"><%= (@database || 'primary').titleize %></span>
+    </div>
     <div class="info-row">
       <span class="label">Version:</span>
       <span class="value"><%= @migration[:version] %></span>
@@ -21,22 +25,44 @@
   </div>
   
   <div class="actions">
-    <%= link_to "← Back to Migrations", migrations_path, class: "btn btn-secondary" %>
+    <% if @database && @database != 'primary' %>
+      <%= link_to "← Back to #{@database.titleize} Migrations", database_migrations_path(@database), class: "btn btn-secondary" %>
+    <% else %>
+      <%= link_to "← Back to Overview", migrations_path, class: "btn btn-secondary" %>
+    <% end %>
     
     <% if @migration[:status] == 'pending' %>
-      <%= button_to "Run Migration", run_migration_path(@migration[:version]), 
-                    method: :post, 
-                    class: "btn btn-success",
-                    data: { confirm: "Are you sure you want to run this migration?" } %>
-      <%= button_to "Skip Migration", skip_migration_path(@migration[:version]), 
-                    method: :post, 
-                    class: "btn btn-warning",
-                    data: { confirm: "Are you sure you want to skip this migration?" } %>
+      <% if @database && @database != 'primary' %>
+        <%= button_to "Run Migration", run_database_migration_path(@database, @migration[:version]), 
+                      method: :post, 
+                      class: "btn btn-success",
+                      data: { confirm: "Are you sure you want to run this migration on the #{@database} database?" } %>
+        <%= button_to "Skip Migration", skip_database_migration_path(@database, @migration[:version]), 
+                      method: :post, 
+                      class: "btn btn-warning",
+                      data: { confirm: "Are you sure you want to skip this migration on the #{@database} database?" } %>
+      <% else %>
+        <%= button_to "Run Migration", run_migration_path(@migration[:version]), 
+                      method: :post, 
+                      class: "btn btn-success",
+                      data: { confirm: "Are you sure you want to run this migration?" } %>
+        <%= button_to "Skip Migration", skip_migration_path(@migration[:version]), 
+                      method: :post, 
+                      class: "btn btn-warning",
+                      data: { confirm: "Are you sure you want to skip this migration?" } %>
+      <% end %>
     <% elsif @migration[:status] == 'skipped' %>
-      <%= button_to "Unskip Migration", unskip_migration_path(@migration[:version]), 
-                    method: :post, 
-                    class: "btn btn-info",
-                    data: { confirm: "Are you sure you want to unskip this migration?" } %>
+      <% if @database && @database != 'primary' %>
+        <%= button_to "Unskip Migration", unskip_database_migration_path(@database, @migration[:version]), 
+                      method: :post, 
+                      class: "btn btn-info",
+                      data: { confirm: "Are you sure you want to unskip this migration on the #{@database} database?" } %>
+      <% else %>
+        <%= button_to "Unskip Migration", unskip_migration_path(@migration[:version]), 
+                      method: :post, 
+                      class: "btn btn-info",
+                      data: { confirm: "Are you sure you want to unskip this migration?" } %>
+      <% end %>
     <% end %>
   </div>
   

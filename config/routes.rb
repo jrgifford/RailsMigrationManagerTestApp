@@ -15,6 +15,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # Database-specific migration routes
+  get 'migrations/database/:database', to: 'migrations#database', as: :database_migrations
+  get 'migrations/database/:database/:id', to: 'migrations#show', as: :database_migration
+  post 'migrations/database/:database/:id/run', to: 'migrations#run', as: :run_database_migration
+  post 'migrations/database/:database/:id/skip', to: 'migrations#skip', as: :skip_database_migration
+  post 'migrations/database/:database/:id/unskip', to: 'migrations#unskip', as: :unskip_database_migration
+
   # Defines the root path route ("/")
   root "migrations#index"
 end
