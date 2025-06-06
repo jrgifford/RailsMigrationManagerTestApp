@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       post :run
       post :skip
       post :unskip
+      get :show
     end
   end
 

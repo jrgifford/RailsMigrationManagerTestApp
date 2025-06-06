@@ -1,0 +1,210 @@
+<div class="container">
+  <h1>Migration Details</h1>
+  
+  <div class="migration-info">
+    <div class="info-row">
+      <span class="label">Version:</span>
+      <span class="value"><%= @migration[:version] %></span>
+    </div>
+    <div class="info-row">
+      <span class="label">Filename:</span>
+      <span class="value"><%= @migration[:filename] %></span>
+    </div>
+    <div class="info-row">
+      <span class="label">Status:</span>
+      <span class="value">
+        <span class="status-badge <%= @migration[:status] %>">
+          <%= @migration[:status].titleize %>
+        </span>
+      </span>
+    </div>
+  </div>
+  
+  <div class="actions">
+    <%= link_to "← Back to Migrations", migrations_path, class: "btn btn-secondary" %>
+    
+    <% if @migration[:status] == 'pending' %>
+      <%= button_to "Run Migration", run_migration_path(@migration[:version]), 
+                    method: :post, 
+                    class: "btn btn-success",
+                    data: { confirm: "Are you sure you want to run this migration?" } %>
+      <%= button_to "Skip Migration", skip_migration_path(@migration[:version]), 
+                    method: :post, 
+                    class: "btn btn-warning",
+                    data: { confirm: "Are you sure you want to skip this migration?" } %>
+    <% elsif @migration[:status] == 'skipped' %>
+      <%= button_to "Unskip Migration", unskip_migration_path(@migration[:version]), 
+                    method: :post, 
+                    class: "btn btn-info",
+                    data: { confirm: "Are you sure you want to unskip this migration?" } %>
+    <% end %>
+  </div>
+  
+  <div class="migration-content">
+    <h2>Migration File Contents</h2>
+    <div class="code-container">
+      <pre><code class="ruby"><%= h(@migration_content) %></code></pre>
+    </div>
+  </div>
+</div>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  h2 {
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+  
+  .migration-info {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .info-row {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .info-row:last-child {
+    margin-bottom: 0;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #495057;
+    min-width: 100px;
+    margin-right: 15px;
+  }
+  
+  .value {
+    color: #212529;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .status-badge.applied {
+    color: #155724;
+    background-color: #d4edda;
+  }
+  
+  .status-badge.pending {
+    color: #856404;
+    background-color: #fff3cd;
+  }
+  
+  .status-badge.skipped {
+    color: #721c24;
+    background-color: #f8d7da;
+  }
+  
+  .actions {
+    margin-bottom: 30px;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 5px 5px 0;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .btn-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  .btn-warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107;
+  }
+  
+  .btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .btn-info {
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+  }
+  
+  .migration-content {
+    margin-top: 30px;
+  }
+  
+  .code-container {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0;
+    overflow-x: auto;
+  }
+  
+  pre {
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  code {
+    color: #333;
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-family: inherit;
+  }
+  
+  /* Basic syntax highlighting for Ruby */
+  .code-container {
+    background-color: #2d3748;
+  }
+  
+  .code-container pre {
+    background-color: #2d3748;
+    color: #e2e8f0;
+  }
+  
+  .code-container code {
+    color: #e2e8f0;
+  }
+</style>

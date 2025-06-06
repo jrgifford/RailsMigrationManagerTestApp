@@ -37,6 +37,10 @@
             </span>
           </td>
           <td>
+            <%= link_to "View", migration_path(migration[:version]), 
+                        class: "btn btn-primary btn-sm",
+                        style: "display: inline-block; margin-right: 5px;" %>
+            
             <% if migration[:status] == 'pending' %>
               <%= button_to "Run", run_migration_path(migration[:version]), 
                           method: :post, 
@@ -54,8 +58,6 @@
                           class: "btn btn-info btn-sm",
                           data: { confirm: "Are you sure you want to unskip this migration?" },
                           style: "display: inline-block;" %>
-            <% else %>
-              <span class="text-muted">No actions available</span>
             <% end %>
           </td>
         </tr>

@@ -86,6 +86,39 @@ class MigrationService
     end
   end
   
+  def self.find_migration_by_version(version)
+    find_migration(version)
+  end
+  
+  def self.read_migration_content(version)
+    migration = find_migration(version)
+    return nil unless migration
+    
+    # Security: Only read files from our known migration list
+    # This prevents directory traversal and arbitrary file reads
+    file_path = migration[:full_path]
+    
+    # Double-check that the path is within our migrations directory
+    migrations_dir = File.join(Rails.root, 'db', 'migrate')
+    unless file_path.start_with?(migrations_dir)
+      Rails.logger.warn "Attempted to read file outside migrations directory: #{file_path}"
+      return nil
+    end
+    
+    # Ensure the file exists and is readable
+    unless File.exist?(file_path) && File.readable?(file_path)
+      Rails.logger.warn "Migration file not found or not readable: #{file_path}"
+      return nil
+    end
+    
+    begin
+      File.read(file_path)
+    rescue => e
+      Rails.logger.error "Error reading migration file #{file_path}: #{e.message}"
+      nil
+    end
+  end
+  
   private
   
   def self.find_migration(version)
