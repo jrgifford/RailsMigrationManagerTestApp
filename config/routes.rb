@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     member do
       post :run
       post :skip
+      post :unskip
     end
   end
 

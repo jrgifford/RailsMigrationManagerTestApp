@@ -26,4 +26,16 @@ class MigrationsController < ApplicationController
     
     redirect_to migrations_path
   end
+  
+  def unskip
+    result = MigrationService.unskip_migration(params[:id])
+    
+    if result[:success]
+      flash[:notice] = result[:message]
+    else
+      flash[:alert] = result[:error]
+    end
+    
+    redirect_to migrations_path
+  end
 end

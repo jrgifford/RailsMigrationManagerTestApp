@@ -48,6 +48,12 @@
                           class: "btn btn-warning btn-sm",
                           data: { confirm: "Are you sure you want to skip this migration?" },
                           style: "display: inline-block;" %>
+            <% elsif migration[:status] == 'skipped' %>
+              <%= button_to "Unskip", unskip_migration_path(migration[:version]), 
+                          method: :post, 
+                          class: "btn btn-info btn-sm",
+                          data: { confirm: "Are you sure you want to unskip this migration?" },
+                          style: "display: inline-block;" %>
             <% else %>
               <span class="text-muted">No actions available</span>
             <% end %>
@@ -130,6 +136,12 @@
     color: #fff;
     background-color: #6c757d;
     border-color: #6c757d;
+  }
+  
+  .btn-info {
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
   }
   
   .btn-sm {

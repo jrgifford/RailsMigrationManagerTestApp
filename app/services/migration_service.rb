@@ -35,7 +35,20 @@ class MigrationService
     return { success: false, error: 'Migration is not pending' } unless migration[:status] == 'pending'
     
     begin
-      ActiveRecord::Migration.run(:up, migration[:full_path], version.to_i)
+      # Load the migration file to get the class
+      require migration[:full_path]
+      
+      # Extract migration class name from filename
+      class_name = migration[:filename].gsub(/^\d+_/, '').gsub(/\.rb$/, '').camelize
+      migration_class = class_name.constantize
+      
+      # Run the migration
+      migration_instance = migration_class.new
+      migration_instance.migrate(:up)
+      
+      # Add to schema_migrations table
+      ActiveRecord::Base.connection.execute("INSERT INTO schema_migrations (version) VALUES ('#{version}')")
+      
       { success: true, message: "Migration #{version} completed successfully" }
     rescue => e
       { success: false, error: "Migration failed: #{e.message}" }
@@ -56,6 +69,20 @@ class MigrationService
       { success: true, message: "Migration #{version} marked as skipped" }
     rescue => e
       { success: false, error: "Failed to skip migration: #{e.message}" }
+    end
+  end
+  
+  def self.unskip_migration(version)
+    migration = find_migration(version)
+    return { success: false, error: 'Migration not found' } unless migration
+    return { success: false, error: 'Migration is not skipped' } unless migration[:status] == 'skipped'
+    
+    begin
+      skipped_migration = SkippedMigration.find_by(version: version)
+      skipped_migration&.destroy!
+      { success: true, message: "Migration #{version} unskipped and is now pending" }
+    rescue => e
+      { success: false, error: "Failed to unskip migration: #{e.message}" }
     end
   end
   
