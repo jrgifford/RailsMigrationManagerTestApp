@@ -1,0 +1,202 @@
+<div class="container">
+  <h1>Rails Migration Manager</h1>
+  
+  <% if flash[:notice] %>
+    <div class="alert alert-success">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+  
+  <% if flash[:alert] %>
+    <div class="alert alert-danger">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+  
+  <div class="actions">
+    <%= link_to "Refresh", migrations_path, class: "btn btn-secondary" %>
+  </div>
+  
+  <table class="migrations-table">
+    <thead>
+      <tr>
+        <th>Version</th>
+        <th>Filename</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @migrations.each do |migration| %>
+        <tr class="migration-row <%= migration[:status] %>">
+          <td><%= migration[:version] %></td>
+          <td><%= migration[:filename] %></td>
+          <td>
+            <span class="status-badge <%= migration[:status] %>">
+              <%= migration[:status].titleize %>
+            </span>
+          </td>
+          <td>
+            <% if migration[:status] == 'pending' %>
+              <%= button_to "Run", run_migration_path(migration[:version]), 
+                          method: :post, 
+                          class: "btn btn-success btn-sm",
+                          data: { confirm: "Are you sure you want to run this migration?" },
+                          style: "display: inline-block; margin-right: 5px;" %>
+              <%= button_to "Skip", skip_migration_path(migration[:version]), 
+                          method: :post, 
+                          class: "btn btn-warning btn-sm",
+                          data: { confirm: "Are you sure you want to skip this migration?" },
+                          style: "display: inline-block;" %>
+            <% else %>
+              <span class="text-muted">No actions available</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  
+  <% if @migrations.empty? %>
+    <p class="no-migrations">No migrations found.</p>
+  <% end %>
+</div>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  .alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+  
+  .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  
+  .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  
+  .actions {
+    margin-bottom: 20px;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 5px;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .btn-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  .btn-warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107;
+  }
+  
+  .btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
+  .migrations-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .migrations-table th,
+  .migrations-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .migrations-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+  }
+  
+  .migration-row.applied {
+    background-color: #f8fff8;
+  }
+  
+  .migration-row.pending {
+    background-color: #fff8f0;
+  }
+  
+  .migration-row.skipped {
+    background-color: #fff0f0;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .status-badge.applied {
+    color: #155724;
+    background-color: #d4edda;
+  }
+  
+  .status-badge.pending {
+    color: #856404;
+    background-color: #fff3cd;
+  }
+  
+  .status-badge.skipped {
+    color: #721c24;
+    background-color: #f8d7da;
+  }
+  
+  .text-muted {
+    color: #6c757d;
+  }
+  
+  .no-migrations {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    margin: 40px 0;
+  }
+</style>
