@@ -1,0 +1,19 @@
+min_version = "2024.9.5"
+
+[env]
+# Project information
+PROJECT_NAME = "{{ config_root | basename }}"
+
+[tools]
+# Install Ruby with the specified version
+ruby = "{{ get_env(name='RUBY_VERSION', default='3.4.4') }}"
+
+[tasks.test]
+description = "Run tests"
+alias = "t"
+run = "rspec test"
+
+[tasks.lint]
+description = "Run lint using Rubocop"
+alias = "l"
+run = "rubocop"
