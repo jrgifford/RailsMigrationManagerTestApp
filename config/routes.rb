@@ -7,4 +7,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  resources :migrations, only: [:index] do
+    post :run, on: :collection
+    post :skip, on: :collection
+  end
+
 end
