@@ -6,7 +6,7 @@ PROJECT_NAME = "{{ config_root | basename }}"
 
 [tools]
 # Install Ruby with the specified version
-ruby = "{{ get_env(name='RUBY_VERSION', default='3.4.4') }}"
+ruby = "{{ get_env(name='RUBY_VERSION', default='3.4.13') }}"
 
 [tasks.test]
 description = "Run tests"
